@@ -1,0 +1,6 @@
+#!/bin/bash
+BASEDIR=$(dirname $0)
+
+chmod +w $BASEDIR/ddtui
+export PATH=$PATH:$BASEDIR/ddtui/
+sudo cp $BASEDIR/ddtui /usr/bin/.

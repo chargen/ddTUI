@@ -1,0 +1,145 @@
+#!/bin/bash
+
+pv_ver(){ #PV Verzió
+	pv --version | cut -b 4-8 | head -n 1
+	return
+}
+
+#Számolás
+VER=$(pv_ver)
+
+list(){ #Meghajtók
+	diskutil list
+	return
+}
+
+size(){ #Fájlméret
+	du -sk $IFF | cut -f1 -s
+	return
+}
+
+help() { #Segítség
+	echo "DD TUI - DD Terminal User Interface"
+	echo "Használat: test.sh [-i INPUT] [-o OUTPUT] || [OPTION]"
+	echo " -i, --input			Fájl vagy eszköz | File or Device"
+	echo " -o, --output			Eszköz vagy fájl | Device or File"
+	echo " -l, --list			Lemezek listázása | Diskutil list"
+	echo " -v, --version			Verzió(k) | Version(s)"
+	echo " -h, --help			Segítség | Help"
+	echo "Kérlek probléma és hiba esetén értesíts! | Please report any bugs to!"
+	echo "Tamás Horváth <htomy92@gmail.com>"
+}
+
+unmount(){ #Lekapcsolás
+
+	if diskutil unmountDisk $OFF &> /dev/null; then
+		: # Siker
+		echo "A leválasztás sikeres volt."
+		else
+		: # Sikertelen
+		echo "Hiba a leválasztás során."
+	fi
+}
+
+#pv(){	#PV telepités
+# 	echo "GIT telepítése"
+# 	echo "sudo port install git-core +svn +doc +bash_completion +gitweb"
+# 
+# 	echo "Pipe Viewer telepítése"
+# 	echo "git clone git://github.com/icetee/pv.git"
+# 	echo "./configure"
+# 	echo "make"
+# 	echo "make install"
+# }
+
+version(){ #Meghajtók
+	#clear
+	echo "Script verzió: 0.1 Béta"
+	
+	#PV telepitve?
+	if test -e /usr/local/bin/pv
+	then
+		echo "Pipe Viewer verzió: "$VER
+	else
+		echo "Nincs telepítve a Pipe Viewer!"
+		echo "./ddtui -pv paranccsal telepíthető"
+		exit 1
+	fi
+	
+	#GIT telepitve?
+	if test -e /usr/local/.git/
+	then
+		echo "A GIT fel van telepítve!"
+	else
+		echo "Nincs telepítve a GIT!"
+		exit 1
+	fi
+	
+	#dd telepitve?
+	if test -e /usr/bin/dd
+	then
+		echo "A dd fel van telepítve!"
+	else
+		echo "Nincs telepítve a dd!"
+		exit 1
+	fi
+	
+	return
+}
+
+numargs=$#
+for ((n=1 ; n <= numargs ; n++))
+do
+case ${n} in
+    -i|--input)    		shift $2;;
+    -o|--output)    	shift $4;;
+esac
+done
+
+case ${1} in
+    -l|--list)    		list;;
+    -h|--help)      	help;;
+    -v|--version)  		version;;
+esac
+
+#Normalizálás
+IFF=$2
+OFF=$4
+
+#size
+SIZE=$(size)
+
+
+# ERROR=0
+# BLOCK=0
+# IO=0
+
+if [[ $1 = "-l" || $1 = "-h" || $1 = "-v" ]]; then BLOCK=1; fi
+
+# if [[ ( $BLOCK != 1 ) && ( $2 = '' || $4 = '' || $1 = '' ) ]]; then
+# 	echo "Add meg a képfájlt és a másolás helyét";
+# 	IO=1;
+# 	ERROR=1;
+# fi
+
+ echo $BLOCK
+#  echo $IO
+  echo $ERROR
+
+if [[ $ERROR != 1 && $BLOCK != 1 ]];
+then
+    #clear
+ 
+	#Információk
+	echo "A fájl helye és neve: " $IFF
+	echo "A másolás helye: " $OFF
+	echo "A fájl mérete: "$SIZE"k"
+	echo
+	
+	#Leválasztás
+	unmount
+	
+	#Kiírás
+	sudo dd if=$IFF bs=16m | pv -s $SIZE"k" | dd of=$OFF bs=16m &> /dev/null
+ 
+fi
