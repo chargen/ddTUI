@@ -1,5 +1,8 @@
 ddTUI - dd Terminal User Interface (0.1 Beta)
 =====
+###Screenshot
+![image](http://icetee.hu/git/ddtui.png)
+
 ###Install
 
 Start the **INSTALL** file, then the script puts it into it the **/usr/bin** into the folder.
@@ -7,7 +10,7 @@ Start the **INSTALL** file, then the script puts it into it the **/usr/bin** int
 ###Usage
 DD TUI - DD Terminal User Interface
 
-SYNTAX: ddtui [-i INPUT] [-o OUTPUT] || [OPTION]
+SYNTAX: **ddtui** [-i *INPUT*] [-o *OUTPUT*] || [OPTION]
 
 1. -i, --input			File or Device
 2. -o, --output			Device or File
@@ -21,7 +24,7 @@ Indítsd el az **INSTALL** fájlt, majd a script bemásolja a **/usr/bin** mapp�
 ###Használat
 DD TUI - DD Terminal User Interface
 
-SYNTAX: ddtui [-i INPUT] [-o OUTPUT] || [OPTION]
+SYNTAX: **ddtui** [-i *INPUT*] [-o *OUTPUT*] || [OPTION]
 
 1. -i, --input			Fájl és eszköz
 2. -o, --output			Eszköz és fájl
